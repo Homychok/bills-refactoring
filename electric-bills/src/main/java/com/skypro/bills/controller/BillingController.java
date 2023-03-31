@@ -4,8 +4,10 @@ import com.skypro.bills.dto.BalanceDTO;
 import com.skypro.bills.dto.PaymentDTO;
 import com.skypro.bills.model.ElectricityMeter;
 import com.skypro.bills.model.Indication;
-import com.skypro.bills.repository.MeterRepository;
+
 import java.util.Comparator;
+
+import com.skypro.bills.repository.MeterRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +34,7 @@ public class BillingController {
   public ResponseEntity<?> pay(@PathVariable("serial") String serial,
       @RequestBody PaymentDTO paymentDTO) {
     ElectricityMeter electricityMeter = meterRepository.findById(serial).get();
+    //ElectricityMeter electricityMeter = meterRepository.findById(serial).get();
     if (paymentDTO.getAmount() <= 0) {
       return ResponseEntity.badRequest().body("Сумма платежа меньше или равна 0");
     }
