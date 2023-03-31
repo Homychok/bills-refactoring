@@ -1,13 +1,8 @@
 package com.skypro.bills.controller;
 
-import com.skypro.bills.dto.BalanceDTO;
 import com.skypro.bills.dto.PaymentDTO;
-import com.skypro.bills.model.ElectricityMeter;
-import com.skypro.bills.model.Indication;
 
-import java.util.Comparator;
-
-import com.skypro.bills.repository.MeterRepository;
+import com.skypro.bills.service.ElectricityMeterService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,45 +18,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class BillingController {
 
   //TODO: Стоит сделать это свойство конфигурируемым через application.properties
-  private final static double priceForKW = 1.05;
-  private final MeterRepository meterRepository;
+private ElectricityMeterService electricityMeterService;
 
-  public BillingController(MeterRepository meterRepository) {
-    this.meterRepository = meterRepository;
+  public BillingController(ElectricityMeterService electricityMeterService) {
+    this.electricityMeterService = electricityMeterService;
   }
 
   @PostMapping("/{serial}")
-  public ResponseEntity<?> pay(@PathVariable("serial") String serial,
+  public ResponseEntity<?> pay(@PathVariable("serial") String serialNumber,
       @RequestBody PaymentDTO paymentDTO) {
-    ElectricityMeter electricityMeter = meterRepository.findById(serial).get();
-    //ElectricityMeter electricityMeter = meterRepository.findById(serial).get();
-    if (paymentDTO.getAmount() <= 0) {
-      return ResponseEntity.badRequest().body("Сумма платежа меньше или равна 0");
-    }
-    electricityMeter.setBalance(electricityMeter.getBalance() + paymentDTO.getAmount());
-    meterRepository.save(electricityMeter);
-    //Подсчитываем баланс - берем последние показания счетчика и умножаем на стоимость,
-    // далее вычитаем из положенных на счетчик средств
-    Indication indications = electricityMeter.getIndications().stream()
-        .max(Comparator.comparing(Indication::getSendingDate))
-        .orElse(new Indication());
-    double spent = indications.getIndication() * priceForKW;
-    double balance = electricityMeter.getBalance() - spent;
-
-    return ResponseEntity.ok(new BalanceDTO(serial, balance));
+    return ResponseEntity.ok(electricityMeterService.pay(serialNumber, paymentDTO));
   }
 
   @GetMapping("/{serial}")
-  public ResponseEntity<?> pay(@PathVariable("serial") String serial) {
-    ElectricityMeter electricityMeter = meterRepository.findById(serial).get();
-    //Подсчитываем баланс - берем последние показания счетчика и умножаем на стоимость,
-    // далее вычитаем из положенных на счетчик средств
-    Indication indications = electricityMeter.getIndications().stream()
-        .max(Comparator.comparing(Indication::getSendingDate))
-        .orElse(new Indication());
-    double spent = indications.getIndication() * priceForKW;
-    double balance = electricityMeter.getBalance() - spent;
-
-    return ResponseEntity.ok(new BalanceDTO(serial, balance));
+  public ResponseEntity<?> pay(@PathVariable("serial") String serialNumber) {
+    return ResponseEntity.ok(electricityMeterService.pay(serialNumber));
   }
 }

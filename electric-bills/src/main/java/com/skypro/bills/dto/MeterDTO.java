@@ -31,20 +31,4 @@ public class MeterDTO {
     dto.setSerialNumber(meter.getSerialNumber());
     return dto;
   }
-//
-//  public String getSerialNumber() {
-//    return serialNumber;
-//  }
-//
-//  public void setSerialNumber(String serialNumber) {
-//    this.serialNumber = serialNumber;
-//  }
-//
-//  public int getLastIndication() {
-//    return lastIndication;
-//  }
-//
-//  public void setLastIndication(int lastIndication) {
-//    this.lastIndication = lastIndication;
-//  }
 }
