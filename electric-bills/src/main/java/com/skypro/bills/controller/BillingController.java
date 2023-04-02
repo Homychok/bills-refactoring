@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/billing")
 public class BillingController {
   private BillingService billingService;
-//  private final static double priceForKW = 1.05;
   public BillingController(BillingService billingService) {
     this.billingService = billingService;
   }
