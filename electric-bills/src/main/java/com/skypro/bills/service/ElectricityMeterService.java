@@ -36,9 +36,8 @@ public class ElectricityMeterService {
     public MeterDTO getMeterBySerialNumber(String serialNumber) {
         Optional<ElectricityMeter> electricityMeter = meterRepository.findAllBySerialNumber(serialNumber);
        if (electricityMeter.isEmpty()){
-           throw new ElectricityMeterNotFoundException();
+           throw new ElectricityMeterNotFoundException("Нет значения");
        }
-//       ElectricityMeter meter1 = electricityMeter.get();
        int meter = electricityMeter.get().getIndications().stream()
                .max(Comparator.comparing(Indication::getSendingDate)).orElse(new Indication()).getIndication();
 
@@ -51,10 +50,10 @@ public class ElectricityMeterService {
         Optional<ElectricityMeter> electricityMeter = meterRepository.findAllBySerialNumber(serialNumber);
 
         if(electricityMeter.isEmpty()) {
-            throw new ElectricityMeterNotFoundException();
+            throw new ElectricityMeterNotFoundException("Нет значения");
         }
         if(indication < 0) {
-            throw new IndicationNotFoundOrIncorrectException();
+            throw new IndicationNotFoundOrIncorrectException("Индикатор не может быть меньше нуля");
         }
 
         ElectricityMeter meter = electricityMeter.get();
@@ -65,7 +64,7 @@ public class ElectricityMeterService {
                 .orElse(new Indication());
 
         if (maxIndication.getIndication() > indication) {
-            throw new IndicationNotFoundOrIncorrectException();
+            throw new IndicationNotFoundOrIncorrectException("Некорректное значение");
         }
 
         Indication indicationCurrent = new Indication();
@@ -81,42 +80,5 @@ public class ElectricityMeterService {
         meterDTO.setLastIndication(indicationNew.getIndication());
 
         return meterDTO;
-    }
-    public BalanceDTO pay(String serialNumber, PaymentDTO paymentDTO) {
-        Projection projection = meterRepository.findAllById(serialNumber);
-        int indication;
-        if (paymentDTO.getAmount() <= 0) {
-            throw new IndicationNotFoundOrIncorrectException();
-        }
-        if (projection.getIndication() == null) {
-            indication = 0;
-        } else {
-            indication = projection.getIndication();
-        }
-
-        double newBalance = projection.getBalance() + paymentDTO.getAmount() - (indication * priceForKW);
-        ElectricityMeter meter = new ElectricityMeter();
-        meter.setSerialNumber(projection.getSerialNumber());
-        meter.setBalance(newBalance);
-        meterRepository.save(meter);
-        BalanceDTO balanceDTO = new BalanceDTO();
-        balanceDTO.setSerialNumber(serialNumber);
-        balanceDTO.setCurrentBalance(newBalance);
-        return balanceDTO;
-    }
-
-    public BalanceDTO pay(String serialNumber){
-        Projection projection = meterRepository.findAllById(serialNumber);
-        int indication;
-        if (projection.getIndication() == null) {
-            indication = 0;
-        } else {
-            indication = projection.getIndication();
-        }
-        double newBalance = projection.getBalance() - indication * priceForKW;
-        BalanceDTO balanceDTO = new BalanceDTO();
-        balanceDTO.setSerialNumber(serialNumber);
-        balanceDTO.setCurrentBalance(newBalance);
-        return balanceDTO;
     }
 }

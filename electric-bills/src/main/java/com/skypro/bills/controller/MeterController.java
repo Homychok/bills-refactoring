@@ -1,14 +1,7 @@
 package com.skypro.bills.controller;
 
 import com.skypro.bills.dto.MeterDTO;
-import com.skypro.bills.model.ElectricityMeter;
-import com.skypro.bills.model.Indication;
 
-import java.time.Instant;
-import java.util.Comparator;
-import java.util.UUID;
-
-import com.skypro.bills.repository.MeterRepository;
 import com.skypro.bills.service.ElectricityMeterService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,16 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/meter")
-//TODO: Хорошо бы задокументировать АПИ :-(
 
 public class MeterController {
 
-//  private MeterRepository meterRepository;
 private ElectricityMeterService electricityMeterService;
-//  public MeterController(MeterRepository meterRepository) {
-//    this.meterRepository = meterRepository;
-//  }
-
 
   public MeterController(ElectricityMeterService electricityMeterService) {
     this.electricityMeterService = electricityMeterService;
