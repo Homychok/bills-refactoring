@@ -2,7 +2,10 @@ package com.skypro.bills.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.skypro.bills.model.ElectricityMeter;
+import lombok.Data;
 
+@Data
 public class MeterDTO {
 
   private String serialNumber;
@@ -16,20 +19,16 @@ public class MeterDTO {
     this.serialNumber = serialNumber;
     this.lastIndication = lastIndication;
   }
-
-  public String getSerialNumber() {
-    return serialNumber;
+  public ElectricityMeter fromMeterDTOToElectricityMeter(){
+    ElectricityMeter electricityMeter = new ElectricityMeter();
+    electricityMeter.setSerialNumber(this.getSerialNumber());
+    electricityMeter.setBalance(0);
+    return electricityMeter;
   }
 
-  public void setSerialNumber(String serialNumber) {
-    this.serialNumber = serialNumber;
-  }
-
-  public int getLastIndication() {
-    return lastIndication;
-  }
-
-  public void setLastIndication(int lastIndication) {
-    this.lastIndication = lastIndication;
+  public static MeterDTO fromElectricityMeterToMeterDTO (ElectricityMeter meter) {
+    MeterDTO dto = new MeterDTO();
+    dto.setSerialNumber(meter.getSerialNumber());
+    return dto;
   }
 }

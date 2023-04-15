@@ -1,5 +1,8 @@
 package com.skypro.bills.dto;
 
+import com.skypro.bills.model.ElectricityMeter;
+import lombok.Data;
+@Data
 public class BalanceDTO {
 
   private String serialNumber;
@@ -13,19 +16,17 @@ public class BalanceDTO {
     this.currentBalance = currentBalance;
   }
 
-  public String getSerialNumber() {
-    return serialNumber;
+  public static BalanceDTO fromElectricityMeterToBalanceDTO(ElectricityMeter electricityMeter) {
+    BalanceDTO balanceDTO = new BalanceDTO();
+    balanceDTO.setSerialNumber(electricityMeter.getSerialNumber());
+    balanceDTO.setCurrentBalance(electricityMeter.getBalance());
+    return balanceDTO;
   }
 
-  public void setSerialNumber(String serialNumber) {
-    this.serialNumber = serialNumber;
-  }
-
-  public double getCurrentBalance() {
-    return currentBalance;
-  }
-
-  public void setCurrentBalance(double currentBalance) {
-    this.currentBalance = currentBalance;
+  public ElectricityMeter fromBalanceDTOtoElectricityMeter(BalanceDTO balanceDTO) {
+    ElectricityMeter electricityMeter = new ElectricityMeter();
+    electricityMeter.setSerialNumber(this.serialNumber);
+    electricityMeter.setBalance(this.currentBalance);
+    return electricityMeter;
   }
 }
