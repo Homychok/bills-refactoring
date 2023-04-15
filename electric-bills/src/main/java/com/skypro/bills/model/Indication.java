@@ -10,7 +10,6 @@ import java.time.Instant;
 public class Indication {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private String id;
   private int indication;
   private Instant sendingDate;

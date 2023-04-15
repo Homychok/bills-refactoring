@@ -14,7 +14,7 @@ public interface MeterRepository extends JpaRepository<ElectricityMeter, String>
     Optional<ElectricityMeter> findAllBySerialNumber(String serialNumber);
     @Query (value = "SELECT table1.serial_number AS serialNumber, " +
             "table2.indication AS maxIndication, " +
-            "MAX(i.sending_date) AS maxSendingDate " +
+            "MAX(table2.sending_date) AS maxSendingDate " +
             "FROM electricity_meter AS table1 " +
             "LEFT JOIN indication AS table2 " +
             "ON table1.serial_number = table2.electricity_meter_serial_number " +
